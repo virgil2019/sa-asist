@@ -1,8 +1,18 @@
 {
+    "ACCOUNT": "0x9B305B2E6dB48a28fe0A53265290b8FFFbA346A3",
+    "CHECK_INTERVAL": 120,
     "STAKE_TIME": 3,
-    "ROLE_TASKS": {
-        "GOLD": [0],
-        "PET": [0],
-        "EQUI": [0]
+    "APPROVAL": 10000000,
+    "LUCKY_STONE_NUM_PER_ROLE": 30,
+    "ROLES": {
+        "GOLD": [
+            83575,84729,89051,91332,93442
+        ],
+        "PET": [
+            93329
+        ],
+        "EQUIP": [
+            93373
+        ]
     }
 }

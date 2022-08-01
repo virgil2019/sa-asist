@@ -41,23 +41,29 @@ async function checkStake(roles) {
 
 async function mainLoop() {
     let roles = config.get('ROLES');
-    let stakingBlock = await checkStake(roles);
+    // let stakingBlock = await checkStake(roles);
+    let stakingBlock = 1;
 
     // Is it time to redeem
     let block = await sa.getBlock(stakingBlock);
     let nowSeconds = new Date().getTime() / 1000;
     if (nowSeconds - block.timestamp >= config.get('STAKE_TIME') * 3600) {
         // Redeem gold
-        for (let i = 0; i < roles.GOLD.length; i++) {
-            await sa.redeemGold(roles.GOLD[i]);
-        }
+        // for (let i = 0; i < roles.GOLD.length; i++) {
+        //     await sa.redeemGold(roles.GOLD[i]);
+        // }
 
         // Approve
-        await sa.approve();
+        // await sa.approve();
 
         // Buy lucky stones
-        let stones = await sa.buyLuckyStone(config.get('LUCKY_STONE_NUM_PER_ROLE') * (roles.PET.length + roles.EQUIP.length));
-
+        // let stones = await sa.buyLuckyStone(config.get('LUCKY_STONE_NUM_PER_ROLE') * (roles.PET.length + roles.EQUIP.length));
+let stones = [];
+for (i = 0; i < 61; i++) {
+    if (i != 10) {
+        stones.push(96221 + i);
+    }
+}
         let index = 0;
         for (let i = 0; i < roles.PET.length; i++) {
             // Use lucky stones
@@ -83,6 +89,7 @@ async function mainLoop() {
 }
 
 async function main() {
+    // console.log(await sa.queryLuckyStone('0x9B305B2E6dB48a28fe0A53265290b8FFFbA346A3'));
     await mainLoop();
     // setInterval(mainLoop, config.get('CHECK_INTERVAL') * 1000);
 }

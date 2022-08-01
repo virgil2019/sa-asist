@@ -1,4 +1,5 @@
 const contracts = require('./abi');
+contracts.D.eth.handleRevert = true;
 const fs = require('fs');
 const config = require('config');
 const {sleep} = require('./utils');
@@ -27,7 +28,7 @@ async function exchangeToken(contract, mapId) {
     'exchangeToken',
     [mapId, tokenIds]
   );
-  await sleep(2);
+  await sleep(5);
 }
 
 async function stake(contract, tokenId) {
@@ -39,7 +40,7 @@ async function stake(contract, tokenId) {
     'stake',
     [tokenId]
   );
-  await sleep(2);
+  await sleep(5);
 }
 
 async function redeem(contract, tokenId) {
@@ -51,7 +52,7 @@ async function redeem(contract, tokenId) {
     'redeem',
     [tokenId]
   );
-  await sleep(2);
+  await sleep(5);
 }
 
 async function useLuckyStone(luckyStone) {
@@ -63,7 +64,7 @@ async function useLuckyStone(luckyStone) {
       'useLuckyStone',
       [luckyStone]
     );
-    await sleep(2);
+    await sleep(5);
 }
 
 async function buyLuckyStone(nums){
@@ -91,7 +92,7 @@ async function buyLuckyStone(nums){
         [amountPerTime]
       );
       cache.push(ret);
-      await sleep(2);
+      await sleep(5);
     }
     if (remain) {
       let ret = await sendTransaction(
@@ -103,7 +104,7 @@ async function buyLuckyStone(nums){
         [remain]
       );
       cache.push(ret);
-      await sleep(2);
+      await sleep(5);
     }
     for (let i = 0; i < cache.length; i++) {
         let ret = cache[i];
@@ -178,7 +179,7 @@ async function approve() {
       'approve',
       [contracts.U.options.address, config.get('APPROVAL')]
     );
-    await sleep(2);
+    await sleep(5);
 }
 
 async function exchangePet() {
