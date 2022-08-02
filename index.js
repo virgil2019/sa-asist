@@ -1,6 +1,8 @@
 const config = require('config');
 const sa = require('./sa');
 
+let allow = true;
+
 async function checkStake(roles) {
     console.log('checkStake');
     // Check status
@@ -42,6 +44,10 @@ async function checkStake(roles) {
 }
 
 async function mainLoop() {
+    if (!allow) {
+        return;
+    }
+    allow = false;
     let roles = config.get('ROLES');
     let stakingBlock = await checkStake(roles);
 
@@ -86,6 +92,7 @@ async function mainLoop() {
             await sa.exchangeEquip();
         }
     }
+    allow = true;
     // console.log('queryCharacter', await sa.queryCharacter(83575));
 }
 

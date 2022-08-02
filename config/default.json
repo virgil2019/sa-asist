@@ -3,7 +3,7 @@
     "CHECK_INTERVAL": 120,
     "STAKE_TIME": 3,
     "APPROVAL": 10000000,
-    "SLEEP": 10,
+    "SLEEP": 20,
     "LUCKY_STONE_NUM_PER_ROLE": 30,
     "ROLES": {
         "GOLD": [
