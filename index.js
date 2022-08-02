@@ -60,7 +60,8 @@ async function mainLoop() {
     if (nowSeconds - block.timestamp >= config.get('STAKE_TIME') * 3600) {
         // Redeem gold
         for (let i = 0; i < roles.GOLD.length; i++) {
-            if (sa.goldStakingBlock(roles.GOLD[i]) == 0) {
+            let b = await sa.goldStakingBlock(roles.GOLD[i]);
+            if (b != 0) {
                 await sa.redeemGold(roles.GOLD[i]);
             }
         }
