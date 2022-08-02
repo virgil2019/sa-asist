@@ -69,62 +69,81 @@ async function useLuckyStone(luckyStone) {
     await sleep(SLEEP_TIME);
 }
 
+async function getLuckyStones(num) {
+  let stones = await queryLuckyStone(address);
+  if (stones.length < num) {
+    let buyStones = await buyLuckyStone(num - stones.length);
+    stones = stones.concat(buyStones);
+  }
+  return stones;
+}
+
+async function queryLuckyStone(address) {
+  let balance = await query(contracts.W, 'balanceOf', [address]);
+  var luckyStones = [];
+  for (let i = 0; i < Number(balance); ++i) {
+    let tokenId = await query(contracts.W, 'tokenOfOwnerByIndex', [address, i]);
+    let tokenType = await query(contracts.U, 'queryTokenType', [tokenId]);
+    if (tokenType == '3') {
+      luckyStones.push(tokenId);
+    }
+  }
+  console.log('queryLuckyStone', luckyStones);
+  return luckyStones;
+};
+
 async function buyLuckyStone(nums){
   console.log('buyLuckyStone', nums);
-  try {
-    let balance = await query(contracts.G, 'balanceOf', [address]);
-    let price = await query(contracts.U, 'queryLuckyStonePrice', []);
-    balance = contracts.D.utils.toNumber(balance);
-    price = contracts.D.utils.toNumber(price);
-    let approveAmount = price * nums;
-    if (approveAmount > balance) {
-      throw Error("amount not enough");
-    }
-    let amountPerTime = 10;
-    let times = nums / amountPerTime;
-    let remain = nums % 10;
-    let stones = [];
-    let cache = [];
-    for (let i = 1; i <= times; ++i) {
-      let ret = await sendTransaction(
-        contracts.D,
-        contracts.U,
-        chainId,
-        secret,
-        'buyLuckyStone',
-        [amountPerTime]
-      );
-      cache.push(ret);
-      await sleep(SLEEP_TIME);
-    }
-    if (remain) {
-      let ret = await sendTransaction(
-        contracts.D,
-        contracts.U,
-        chainId,
-        secret,
-        'buyLuckyStone',
-        [remain]
-      );
-      cache.push(ret);
-      await sleep(SLEEP_TIME);
-    }
-    for (let i = 0; i < cache.length; i++) {
-        let ret = cache[i];
-        for (let j = 0; j < ret.logs.length; j++) {
-            let topics = ret.logs[j].topics;
-            if (ret.logs[j].address == contracts.W._address && topics.length != 0) {
-                if (topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
-                    let id = contracts.D.eth.abi.decodeParameter('uint256', topics[3]);
-                    stones.push(id);
-                }
-            }
-        }
-    }
-    return stones;
-  } catch (err) {
-    console.log(err);
+  let balance = await query(contracts.G, 'balanceOf', [address]);
+  let price = await query(contracts.U, 'queryLuckyStonePrice', []);
+  balance = contracts.D.utils.toNumber(balance);
+  price = contracts.D.utils.toNumber(price);
+  let approveAmount = price * nums;
+  if (approveAmount > balance) {
+    throw Error("amount not enough");
   }
+  let amountPerTime = 10;
+  let times = nums / amountPerTime;
+  let remain = nums % 10;
+  let stones = [];
+  let cache = [];
+  for (let i = 1; i <= times; ++i) {
+    let ret = await sendTransaction(
+      contracts.D,
+      contracts.U,
+      chainId,
+      secret,
+      'buyLuckyStone',
+      [amountPerTime]
+    );
+    cache.push(ret);
+    await sleep(SLEEP_TIME);
+  }
+  if (remain) {
+    let ret = await sendTransaction(
+      contracts.D,
+      contracts.U,
+      chainId,
+      secret,
+      'buyLuckyStone',
+      [remain]
+    );
+    cache.push(ret);
+    await sleep(SLEEP_TIME);
+  }
+  for (let i = 0; i < cache.length; i++) {
+      let ret = cache[i];
+      for (let j = 0; j < ret.logs.length; j++) {
+          let topics = ret.logs[j].topics;
+          if (ret.logs[j].address == contracts.W._address && topics.length != 0) {
+              if (topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
+                  let id = contracts.D.eth.abi.decodeParameter('uint256', topics[3]);
+                  stones.push(id);
+              }
+          }
+      }
+  }
+  return stones;
 }
 
 async function goldStakingBlock(roleId) {
@@ -215,7 +234,7 @@ module.exports = {
     redeemPet: redeemPet,
     redeemEquip: redeemEquip,
     approve: approve,
-    buyLuckyStone: buyLuckyStone,
+    getLuckyStones: getLuckyStones,
     useLuckyStone: useLuckyStone,
     exchangePet: exchangePet,
     exchangeEquip: exchangeEquip,

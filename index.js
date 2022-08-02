@@ -1,5 +1,6 @@
 const config = require('config');
 const sa = require('./sa');
+const { sleep } = require('./utils');
 
 let allow = true;
 
@@ -44,63 +45,68 @@ async function checkStake(roles) {
 }
 
 async function mainLoop() {
-    if (!allow) {
-        return;
-    }
-    allow = false;
-    let roles = config.get('ROLES');
-    let stakingBlock = await checkStake(roles);
+    try {
+        let roles = config.get('ROLES');
+        let stakingBlock = await checkStake(roles);
 
-    // Is it time to redeem
-    if (stakingBlock == Number.MAX_SAFE_INTEGER) {
-        return;
-    }
-    let block = await sa.getBlock(stakingBlock);
-    let nowSeconds = new Date().getTime() / 1000;
-    if (nowSeconds - block.timestamp >= config.get('STAKE_TIME') * 3600) {
-        // Redeem gold
-        for (let i = 0; i < roles.GOLD.length; i++) {
-            let b = await sa.goldStakingBlock(roles.GOLD[i]);
-            if (b != 0) {
-                await sa.redeemGold(roles.GOLD[i]);
+        // Is it time to redeem
+        if (stakingBlock == Number.MAX_SAFE_INTEGER) {
+            return;
+        }
+        let block = await sa.getBlock(stakingBlock);
+        let nowSeconds = new Date().getTime() / 1000;
+        if (nowSeconds - block.timestamp >= config.get('STAKE_TIME') * 3600) {
+            // Redeem gold
+            for (let i = 0; i < roles.GOLD.length; i++) {
+                let b = await sa.goldStakingBlock(roles.GOLD[i]);
+                if (b != 0) {
+                    await sa.redeemGold(roles.GOLD[i]);
+                }
+            }
+
+            // Approve
+            await sa.approve();
+
+            // Buy lucky stones
+            let stones = await sa.getLuckyStones(config.get('LUCKY_STONE_NUM_PER_ROLE') * (roles.PET.length + roles.EQUIP.length));
+
+            let index = 0;
+            for (let i = 0; i < roles.PET.length; i++) {
+                // Use lucky stones
+                await sa.useLuckyStone(stones.slice(index, index + config.get('LUCKY_STONE_NUM_PER_ROLE')));
+                index += config.get('LUCKY_STONE_NUM_PER_ROLE');
+                // Redeem
+                await sa.redeemPet(roles.PET[i]);
+                // Exchange
+                await sa.exchangePet();
+            }
+            
+            for (let i = 0; i < roles.EQUIP.length; i++) {
+                // Use lucky stones
+                await sa.useLuckyStone(stones.slice(index, index + config.get('LUCKY_STONE_NUM_PER_ROLE')));
+                index += config.get('LUCKY_STONE_NUM_PER_ROLE');
+                // Redeem
+                await sa.redeemEquip(roles.EQUIP[i]);
+                // Exhange
+                await sa.exchangeEquip();
             }
         }
-
-        // Approve
-        await sa.approve();
-
-        // Buy lucky stones
-        let stones = await sa.buyLuckyStone(config.get('LUCKY_STONE_NUM_PER_ROLE') * (roles.PET.length + roles.EQUIP.length));
-
-        let index = 0;
-        for (let i = 0; i < roles.PET.length; i++) {
-            // Use lucky stones
-            await sa.useLuckyStone(stones.slice(index, index + config.get('LUCKY_STONE_NUM_PER_ROLE')));
-            index += config.get('LUCKY_STONE_NUM_PER_ROLE');
-            // Redeem
-            await sa.redeemPet(roles.PET[i]);
-            // Exchange
-            await sa.exchangePet();
-        }
-        
-        for (let i = 0; i < roles.EQUIP.length; i++) {
-            // Use lucky stones
-            await sa.useLuckyStone(stones.slice(index, index + config.get('LUCKY_STONE_NUM_PER_ROLE')));
-            index += config.get('LUCKY_STONE_NUM_PER_ROLE');
-            // Redeem
-            await sa.redeemEquip(roles.EQUIP[i]);
-            // Exhange
-            await sa.exchangeEquip();
-        }
+        allow = true;
     }
-    allow = true;
+    catch (e) {
+        console.log(e);
+        allow = true;
+    }
     // console.log('queryCharacter', await sa.queryCharacter(83575));
 }
 
 async function main() {
     // console.log(await sa.queryLuckyStone('0x9B305B2E6dB48a28fe0A53265290b8FFFbA346A3'));
     // await mainLoop();
-    setInterval(mainLoop, config.get('CHECK_INTERVAL') * 1000);
+    while (true) {
+        await mainLoop();
+        await sleep(config.get('CHECK_INTERVAL'));
+    }
 }
 
 main()
