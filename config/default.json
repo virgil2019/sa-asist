@@ -3,10 +3,11 @@
     "CHECK_INTERVAL": 120,
     "STAKE_TIME": 3,
     "APPROVAL": 10000000,
+    "SLEEP": 10,
     "LUCKY_STONE_NUM_PER_ROLE": 30,
     "ROLES": {
         "GOLD": [
-            83575,84729,89051,91332,93442
+            83575,84729,97357,97424,93442
         ],
         "PET": [
             93329

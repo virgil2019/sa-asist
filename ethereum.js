@@ -21,7 +21,7 @@ module.exports = {
         // console.log('estimateGas: ' + estimateGas);
   
         const tx = { account, to, chainId, data, nonce, gas: 8000000, gasPrice };
-        console.log(tx);
+        // console.log(tx);
   
         let signTx =
           await provider.eth.accounts.signTransaction(tx, accountPrivateKey);

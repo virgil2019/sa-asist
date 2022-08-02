@@ -7,6 +7,7 @@ const {sendTransaction, query} = require('./ethereum');
 const address = config.get('ACCOUNT');
 const secret = fs.readFileSync('./.secret', 'utf8');
 const chainId = 210425;
+const SLEEP_TIME = config.get('SLEEP');
 
 const MAP_ID = {
     EQUIP: 0,
@@ -28,7 +29,7 @@ async function exchangeToken(contract, mapId) {
     'exchangeToken',
     [mapId, tokenIds]
   );
-  await sleep(5);
+  await sleep(SLEEP_TIME);
 }
 
 async function stake(contract, tokenId) {
@@ -40,7 +41,7 @@ async function stake(contract, tokenId) {
     'stake',
     [tokenId]
   );
-  await sleep(5);
+  await sleep(SLEEP_TIME);
 }
 
 async function redeem(contract, tokenId) {
@@ -52,10 +53,11 @@ async function redeem(contract, tokenId) {
     'redeem',
     [tokenId]
   );
-  await sleep(5);
+  await sleep(SLEEP_TIME);
 }
 
 async function useLuckyStone(luckyStone) {
+    console.log('useLuckyStone', luckyStone);
     await sendTransaction(
       contracts.D,
       contracts.U,
@@ -64,10 +66,11 @@ async function useLuckyStone(luckyStone) {
       'useLuckyStone',
       [luckyStone]
     );
-    await sleep(5);
+    await sleep(SLEEP_TIME);
 }
 
 async function buyLuckyStone(nums){
+  console.log('buyLuckyStone', nums);
   try {
     let balance = await query(contracts.G, 'balanceOf', [address]);
     let price = await query(contracts.U, 'queryLuckyStonePrice', []);
@@ -92,7 +95,7 @@ async function buyLuckyStone(nums){
         [amountPerTime]
       );
       cache.push(ret);
-      await sleep(5);
+      await sleep(SLEEP_TIME);
     }
     if (remain) {
       let ret = await sendTransaction(
@@ -104,7 +107,7 @@ async function buyLuckyStone(nums){
         [remain]
       );
       cache.push(ret);
-      await sleep(5);
+      await sleep(SLEEP_TIME);
     }
     for (let i = 0; i < cache.length; i++) {
         let ret = cache[i];
@@ -127,30 +130,36 @@ async function buyLuckyStone(nums){
 async function goldStakingBlock(roleId) {
     let info = await query(contracts.G, 'stakeInfo', [address, roleId]);
     let json = JSON.parse(info);
+    console.log('goldStakingBlock', roleId, json);
     return json.stakeBn;
 }
 
 async function petStakingBlock(roleId) {
     let info = await query(contracts.j, 'stakeInfo', [address, roleId]);
     let json = JSON.parse(info);
+    console.log('petStakingBlock', roleId, json);
     return json.stakeBn;
 }
 
 async function equipStakingBlock(roleId) {
     let info = await query(contracts.H, 'stakeInfo', [address, roleId]);
     let json = JSON.parse(info);
+    console.log('equipStakingBlock', roleId, json);
     return json.stakeBn;
 }
 
 async function stakeGold(roleId) {
+    console.log('stakeGold', roleId);
     await stake(contracts.G, roleId);
 }
 
 async function stakePet(roleId) {
+    console.log('stakePet', roleId);
     await stake(contracts.j, roleId);
 }
 
 async function stakeEquip(roleId) {
+    console.log('stakeEquip', roleId);
     await stake(contracts.H, roleId);
 }
 
@@ -159,18 +168,22 @@ async function getBlock(block) {
 }
 
 async function redeemGold(roleId) {
+    console.log('redeemGold', roleId);
     await redeem(contracts.G, roleId);
 }
 
 async function redeemPet(roleId) {
+    console.log('redeemPet', roleId);
     await redeem(contracts.j, roleId);
 }
 
 async function redeemEquip(roleId) {
+    console.log('redeemEquip', roleId);
     await redeem(contracts.H, roleId);
 }
 
 async function approve() {
+    console.log('approve');
     await sendTransaction(
       contracts.D,
       contracts.G,
@@ -179,7 +192,7 @@ async function approve() {
       'approve',
       [contracts.U.options.address, config.get('APPROVAL')]
     );
-    await sleep(5);
+    await sleep(SLEEP_TIME);
 }
 
 async function exchangePet() {
