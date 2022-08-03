@@ -133,10 +133,10 @@ class Logic {
             let stones = await sa.getLuckyStones(config.get('LUCKY_STONE_NUM_PER_ROLE') * (this.roles.pet.length + this.roles.equip.length));
 
             // Redeem pet
-            await this.redeemPet();
+            await this.redeemPet(stones);
 
             // Redeem equip
-            await this.redeemEquip();
+            await this.redeemEquip(stones);
         }
         catch (e) {
             console.log(e);
