@@ -115,6 +115,53 @@ class Logic {
         }
     }
 
+    async changeEquips() {
+        let queryBestEquip = async () => {
+            let ret = {};
+            let equips = await sa.queryEquips();
+            for (let i = 0; i < equips.length; i++) {
+                let equipDetail = await sa.queryToken(equips[i]);
+                let equipType = equipDetail._position;
+                if (ret[equipType] == null) {
+                    ret[equipType] = equipDetail;
+                }
+                else {
+                    if (parseInt(ret[equipType]._power) < parseInt(equipDetail._power)) {
+                        ret[equipType] = equipDetail;
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        // sort roles by power
+        let roles = await sa.queryRoles();
+        roles = JSON.parse(JSON.stringify(roles));
+        
+        let powerMap = {};
+        for (let i = 0; i < roles.free.length; i++) {
+            let info = await sa.queryCharacter(roles.free[i]);
+            powerMap[roles.free[i]] = info.totalPower;
+        }
+
+        roles.free.sort((t1, t2) => {
+            return powerMap[t2] - powerMap[t1];
+        });
+        console.log('sorted free roles', roles.free);
+
+        for (let i = 0; i < roles.free.length; i++) {
+            let best = await queryBestEquip();
+            let character = await sa.queryCharacter(roles.free[i]);
+            for (let j = 0; j < character.tokenList.length; j++) {
+                let equip = await sa.queryToken(character.tokenList[j]);
+                if (parseInt(equip._power) < parseInt(best[j]._power)) {
+                    await sa.wear(roles.free[i], best[j]._tokenId);
+                }
+            }
+        }
+    }
+
     async mainLoop() {
         try {
             await this.init();
@@ -138,6 +185,9 @@ class Logic {
 
             // Redeem equip
             await this.redeemEquip(stones);
+
+            // Change equips
+            await this.changeEquips();
         }
         catch (e) {
             console.log(e);

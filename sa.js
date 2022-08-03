@@ -20,6 +20,12 @@ const ITEM_TYPE = {
   STONE: 3,
 }
 
+const EQUIP_TYPE = {
+  WEAPON: 0,
+  CLOTH: 1,
+  PET: 2,
+}
+
 async function exchangeToken(contract, mapId) {
   let balance = await query(contract, 'balanceOf', [address]);
   let tokenIds = [];
@@ -96,6 +102,19 @@ async function queryLuckyStone(address) {
   }
   console.log('queryLuckyStone', luckyStones);
   return luckyStones;
+};
+
+async function queryEquips() {
+  let balance = await query(contracts.W, 'balanceOf', [address]);
+  var equips = [];
+  for (let i = 0; i < Number(balance); ++i) {
+    let tokenId = await query(contracts.W, 'tokenOfOwnerByIndex', [address, i]);
+    let tokenType = await query(contracts.U, 'queryTokenType', [tokenId]);
+    if (tokenType == '2') {
+      equips.push(tokenId);
+    }
+  }
+  return equips;
 };
 
 async function queryFreeRoles(address) {
@@ -176,7 +195,7 @@ async function petStakingBlock(roleId) {
     let info = await query(contracts.j, 'stakeInfo', [address, roleId]);
     let json = JSON.parse(info);
     console.log('petStakingBlock', roleId, json);
-    return json.stakeBn;
+    return parseInt(json.stakeBn);
 }
 
 async function equipStakingBlock(roleId) {
@@ -258,7 +277,25 @@ async function queryCharacter(characterId) {
   return query(contracts.U, 'queryCharacter', [characterId])
 }
 
+async function wear(roleId, equipId) {
+  console.log('wear', roleId, equipId);
+  await sendTransaction(
+    contracts.D,
+    contracts.U,
+    chainId,
+    secret,
+    'wear',
+    [roleId, [equipId]]
+  );
+  await sleep(SLEEP_TIME);
+}
+
+async function queryToken(tokenId) {
+  return query(contracts.U, 'queryToken', [tokenId])
+}
+
 module.exports = {
+    EQUIP_TYPE: EQUIP_TYPE,
     goldStakingBlock: goldStakingBlock,
     petStakingBlock: petStakingBlock,
     equipStakingBlock: equipStakingBlock,
@@ -276,4 +313,7 @@ module.exports = {
     exchangeEquip: exchangeEquip,
     queryRoles: queryRoles,
     queryCharacter: queryCharacter,
+    queryEquips: queryEquips,
+    wear: wear,
+    queryToken: queryToken,
 }
