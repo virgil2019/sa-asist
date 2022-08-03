@@ -9,6 +9,7 @@ class Logic {
 
     async init() {
         this.roles = await sa.queryRoles();
+        this.roles = JSON.parse(JSON.stringify(this.roles));
         console.log('init roles', this.roles);
     }
 
