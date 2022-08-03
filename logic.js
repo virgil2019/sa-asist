@@ -188,6 +188,9 @@ class Logic {
 
             // Change equips
             await this.changeEquips();
+
+            // Clear box
+            await sa.sellToken();
         }
         catch (e) {
             console.log(e);

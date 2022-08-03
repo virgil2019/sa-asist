@@ -26,6 +26,37 @@ const EQUIP_TYPE = {
   PET: 2,
 }
 
+async function tokenOfOwnerByIndex(address, index) {
+  return query(contracts.W, 'tokenOfOwnerByIndex', [address, index]);
+}
+
+async function sellToken() {
+  let balance = await query(contracts.W, 'balanceOf', [address]);
+  for (let i = 0; i < Number(balance);) {
+    console.log(i, balance);
+    let tokenId = await tokenOfOwnerByIndex(address, i);
+    let tokenType = await query(contracts.U, 'queryTokenType', [tokenId]);
+    if (tokenType == ITEM_TYPE.EQUIP) {
+      let tokenInfo = await queryToken(tokenId);
+      if (parseInt(tokenInfo._rare) <= config.get('RARE')) {
+        console.log(tokenInfo);
+        await sendTransaction(
+          contracts.D,
+          contracts.G,
+          chainId,
+          secret,
+          'sellTokenInfo',
+          [tokenId]
+        );
+        await sleep(SLEEP_TIME);
+        --balance;
+        continue;
+      }
+    }
+    ++i;
+  }
+}
+
 async function exchangeToken(contract, mapId) {
   let balance = await query(contract, 'balanceOf', [address]);
   let tokenIds = [];
@@ -316,4 +347,5 @@ module.exports = {
     queryEquips: queryEquips,
     wear: wear,
     queryToken: queryToken,
+    sellToken: sellToken,
 }
