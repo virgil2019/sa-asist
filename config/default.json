@@ -5,15 +5,6 @@
     "APPROVAL": 10000000,
     "SLEEP": 20,
     "LUCKY_STONE_NUM_PER_ROLE": 30,
-    "ROLES": {
-        "GOLD": [
-            83575,84729,97357,97424,93442
-        ],
-        "PET": [
-            93329
-        ],
-        "EQUIP": [
-            93373
-        ]
-    }
+    "EQUIP_NUM": 1,
+    "PET_NUM": 1
 }

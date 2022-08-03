@@ -14,6 +14,12 @@ const MAP_ID = {
     PET: 1,
 }
 
+const ITEM_TYPE = {
+  ROLE: 1,
+  EQUIP: 2,
+  STONE: 3,
+}
+
 async function exchangeToken(contract, mapId) {
   let balance = await query(contract, 'balanceOf', [address]);
   let tokenIds = [];
@@ -84,12 +90,25 @@ async function queryLuckyStone(address) {
   for (let i = 0; i < Number(balance); ++i) {
     let tokenId = await query(contracts.W, 'tokenOfOwnerByIndex', [address, i]);
     let tokenType = await query(contracts.U, 'queryTokenType', [tokenId]);
-    if (tokenType == '3') {
+    if (tokenType == ITEM_TYPE.ROLE.STONE) {
       luckyStones.push(tokenId);
     }
   }
   console.log('queryLuckyStone', luckyStones);
   return luckyStones;
+};
+
+async function queryFreeRoles(address) {
+  let balance = await query(contracts.W, 'balanceOf', [address]);
+  var roles = [];
+  for (let i = 0; i < Number(balance); ++i) {
+    let tokenId = await query(contracts.W, 'tokenOfOwnerByIndex', [address, i]);
+    let tokenType = await query(contracts.U, 'queryTokenType', [tokenId]);
+    if (tokenType == ITEM_TYPE.ROLE) {
+      roles.push(tokenId);
+    }
+  }
+  return roles;
 };
 
 async function buyLuckyStone(nums){
@@ -222,6 +241,23 @@ async function exchangeEquip() {
     await exchangeToken(contracts.H, MAP_ID.EQUIP);
 }
 
+async function queryRoles() {
+  let r0 = await queryFreeRoles(address);
+  let r1 = await query(contracts.G, 'stakeTokenIdList', [address]);
+  let r2 = await query(contracts.j, 'stakeTokenIdList', [address]);
+  let r3 = await query(contracts.H, 'stakeTokenIdList', [address]);
+  return {
+    free: r0,
+    gold: r1,
+    pet: r2,
+    equip: r3
+  }
+}
+
+async function queryCharacter(characterId) {
+  return query(contracts.U, 'queryCharacter', [characterId])
+}
+
 module.exports = {
     goldStakingBlock: goldStakingBlock,
     petStakingBlock: petStakingBlock,
@@ -238,4 +274,6 @@ module.exports = {
     useLuckyStone: useLuckyStone,
     exchangePet: exchangePet,
     exchangeEquip: exchangeEquip,
+    queryRoles: queryRoles,
+    queryCharacter: queryCharacter,
 }
