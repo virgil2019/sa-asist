@@ -3,8 +3,10 @@
     "CHECK_INTERVAL": 120,
     "STAKE_TIME": 3,
     "APPROVAL": 10000000,
-    "SLEEP": 20,
+    "SLEEP": 10,
     "LUCKY_STONE_NUM_PER_ROLE": 30,
     "EQUIP_NUM": 1,
-    "PET_NUM": 1
+    "PET_NUM": 1,
+    "RARE": 2,
+    "EXCHANGE_MIN": 12
 }

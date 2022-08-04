@@ -57,6 +57,26 @@ async function sellToken() {
   }
 }
 
+async function queryPetToken() {
+  let balance = await query(contracts.j, 'balanceOf', [address]);
+  let tokenIds = [];
+  for (let i = 0; i < balance; ++i) {
+    let tokenId = await query(contracts.j, 'tokenOfOwnerByIndex', [address, i]);
+    tokenIds.push(tokenId);
+  }
+  return tokenIds;
+}
+
+async function queryEquipToken() {
+  let balance = await query(contracts.H, 'balanceOf', [address]);
+  let tokenIds = [];
+  for (let i = 0; i < balance; ++i) {
+    let tokenId = await query(contracts.H, 'tokenOfOwnerByIndex', [address, i]);
+    tokenIds.push(tokenId);
+  }
+  return tokenIds;
+}
+
 async function exchangeToken(contract, mapId) {
   let balance = await query(contract, 'balanceOf', [address]);
   let tokenIds = [];
@@ -115,7 +135,15 @@ async function useLuckyStone(luckyStone) {
 async function getLuckyStones(num) {
   let stones = await queryLuckyStone(address);
   if (stones.length < num) {
-    let buyStones = await buyLuckyStone(num - stones.length);
+    let buyAmount = num - stones.length;
+    let balance = await query(contracts.G, 'balanceOf', [address]);
+    let price = await query(contracts.U, 'queryLuckyStonePrice', []);
+    balance = contracts.D.utils.toNumber(balance);
+    price = contracts.D.utils.toNumber(price);
+    if (price * buyAmount > balance) {
+      return null;
+    }
+    let buyStones = await buyLuckyStone(buyAmount);
     stones = stones.concat(buyStones);
   }
   return stones;
@@ -348,4 +376,6 @@ module.exports = {
     wear: wear,
     queryToken: queryToken,
     sellToken: sellToken,
+    queryEquipToken: queryEquipToken,
+    queryPetToken: queryPetToken,
 }

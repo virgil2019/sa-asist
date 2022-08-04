@@ -91,26 +91,41 @@ class Logic {
     }
 
     // Redeem pet
-    async redeemPet(stones) {
+    async redeemPet() {
         for (let i = 0; i < this.roles.pet.length; i++) {
-            // Use lucky stones
-            await sa.useLuckyStone(stones.slice(0, config.get('LUCKY_STONE_NUM_PER_ROLE')));
-            stones.splice(0, config.get('LUCKY_STONE_NUM_PER_ROLE'));
             // Redeem
             await sa.redeemPet(this.roles.pet[i]);
-            // Exchange
-            await sa.exchangePet();
         }
     }
 
-    async redeemEquip(stones) {
+    async redeemEquip() {
         for (let i = 0; i < this.roles.equip.length; i++) {
-            // Use lucky stones
-            await sa.useLuckyStone(stones.slice(0, config.get('LUCKY_STONE_NUM_PER_ROLE')));
-            stones.splice(0, config.get('LUCKY_STONE_NUM_PER_ROLE'));
             // Redeem
             await sa.redeemEquip(this.roles.equip[i]);
-            // Exhange
+        }
+    }
+
+    // Exchange
+    async exchange() {
+        let petTokens = await sa.queryPetToken();
+        if (petTokens.length >= config.get('EXCHANGE_MIN')) {
+            // exchange pet tokens
+            let stones = await sa.getLuckyStones(config.get('LUCKY_STONE_NUM_PER_ROLE'));
+            if (stones == null) {
+                return;
+            }
+            await sa.useLuckyStone(stones.slice(0, config.get('LUCKY_STONE_NUM_PER_ROLE')));
+            await sa.exchangePet();
+        }
+
+        let equipTokens = await sa.queryEquipToken();
+        if (equipTokens.length >= config.get('EXCHANGE_MIN')) {
+            // exchange equip tokens
+            let stones = await sa.getLuckyStones(config.get('LUCKY_STONE_NUM_PER_ROLE'));
+            if (stones == null) {
+                return;
+            }
+            await sa.useLuckyStone(stones.slice(0, config.get('LUCKY_STONE_NUM_PER_ROLE')));
             await sa.exchangeEquip();
         }
     }
@@ -177,14 +192,14 @@ class Logic {
             // Approve
             await sa.approve();
 
-            // Buy lucky stones
-            let stones = await sa.getLuckyStones(config.get('LUCKY_STONE_NUM_PER_ROLE') * (this.roles.pet.length + this.roles.equip.length));
-
             // Redeem pet
-            await this.redeemPet(stones);
+            await this.redeemPet();
 
             // Redeem equip
-            await this.redeemEquip(stones);
+            await this.redeemEquip();
+
+            // Exchange
+            await this.exchange();
 
             // Change equips
             await this.changeEquips();
