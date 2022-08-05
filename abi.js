@@ -4620,7 +4620,9 @@ _ &&
   (L = '0x714377e2443aAaF9e1Fcdf77358639c9E01f68E6'),
   (R = '0xF386b1DCc39cC40aa8f22c03FD6929F17021f6eE'),
   (N = '0xa0C63FAC4e5425F4721FF3258c3FA5B381152F73'));
-var D = new Web3('https://openapi2.platon.network/rpc'),
+
+function connect() {
+  var D = new Web3('wss://openapi2.platon.network/ws'),
   U = new D.eth.Contract(l, x),
   W = new D.eth.Contract(c, O),
   G = new D.eth.Contract(m, P),
@@ -4633,19 +4635,23 @@ var D = new Web3('https://openapi2.platon.network/rpc'),
   $ = new D.eth.Contract(w, L),
   Y = new D.eth.Contract(v, R),
 	X = '';
+  return {
+    D,
+    U,
+    W,
+    G,
+    H,
+    j,
+    J,
+    z,
+    V,
+    K,
+    $,
+    Y,
+    X,
+  };
+}
 
 module.exports = {
-	D,
-	U,
-	W,
-	G,
-	H,
-	j,
-	J,
-	z,
-	V,
-	K,
-	$,
-	Y,
-	X,
+  connect,
 }

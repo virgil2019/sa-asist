@@ -1,5 +1,4 @@
-const contracts = require('./abi');
-contracts.D.eth.handleRevert = true;
+const abi = require('./abi');
 const fs = require('fs');
 const config = require('config');
 const {sleep} = require('./utils');
@@ -353,8 +352,14 @@ async function queryToken(tokenId) {
   return query(contracts.U, 'queryToken', [tokenId])
 }
 
+async function init() {
+  contracts = abi.connect();
+  contracts.D.eth.handleRevert = true;
+}
+
 module.exports = {
     EQUIP_TYPE: EQUIP_TYPE,
+    init: init,
     goldStakingBlock: goldStakingBlock,
     petStakingBlock: petStakingBlock,
     equipStakingBlock: equipStakingBlock,

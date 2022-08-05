@@ -7,10 +7,10 @@ class Logic {
         this.roles = null;
     }
 
-    async init() {
+    async queryRoles() {
         this.roles = await sa.queryRoles();
         this.roles = JSON.parse(JSON.stringify(this.roles));
-        console.log('init roles', this.roles);
+        console.log('query roles', this.roles);
     }
 
     // check status and try to let them work
@@ -179,41 +179,52 @@ class Logic {
         }
     }
 
+    async init() {
+        sa.init();
+    }
+
     async mainLoop() {
-        try {
-            await this.init();
-            let redeem = await this.checkAndDispatch();
+        await this.queryRoles();
+        let redeem = await this.checkAndDispatch();
 
-            // Is it time to redeem
-            if (!redeem) {
-                return;
-            }
-
-            await this.redeemGold();
-
-            // Approve
-            await sa.approve();
-
-            // Redeem pet
-            await this.redeemPet();
-
-            // Redeem equip
-            await this.redeemEquip();
-
-            // Exchange
-            await this.exchange();
-
-            // Change equips
-            await this.changeEquips();
-
-            // Clear box
-            await sa.sellToken();
+        // Is it time to redeem
+        if (!redeem) {
+            return;
         }
-        catch (e) {
-            console.log(e);
-        }
+
+        await this.redeemGold();
+
+        // Approve
+        await sa.approve();
+
+        // Redeem pet
+        await this.redeemPet();
+
+        // Redeem equip
+        await this.redeemEquip();
+
+        // Exchange
+        await this.exchange();
+
+        // Change equips
+        await this.changeEquips();
+
+        // Clear box
+        await sa.sellToken();
         // console.log('queryCharacter', await sa.queryCharacter(83575));
-    }    
+    }
+    
+    async run() {
+        while (true) {
+            try {
+                await this.mainLoop();
+                await sleep(config.get('CHECK_INTERVAL'));
+            }
+            catch (e) {
+                console.log(e);
+            }
+        }
+    }
 }
 
 module.exports = Logic;
