@@ -184,6 +184,7 @@ class Logic {
     }
 
     async mainLoop() {
+        this.init();
         await this.queryRoles();
         let redeem = await this.checkAndDispatch();
 

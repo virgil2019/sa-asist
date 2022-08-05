@@ -6,7 +6,6 @@ const Logic = require('./logic');
 async function main() {
     // console.log(await sa.queryLuckyStone('0x9B305B2E6dB48a28fe0A53265290b8FFFbA346A3'));
     let logic = new Logic();
-    logic.init();
     await logic.run();
 }
 
