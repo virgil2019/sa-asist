@@ -108,6 +108,7 @@ class Logic {
     // Exchange
     async exchange() {
         let petTokens = await sa.queryPetToken();
+        console.log('exchange petTokens', petTokens, petTokens.length);
         if (petTokens.length >= config.get('EXCHANGE_MIN')) {
             // exchange pet tokens
             let stones = await sa.getLuckyStones(config.get('LUCKY_STONE_NUM_PER_ROLE'));
@@ -119,6 +120,7 @@ class Logic {
         }
 
         let equipTokens = await sa.queryEquipToken();
+        console.log('exchange equipTokens', equipTokens, equipTokens.length);
         if (equipTokens.length >= config.get('EXCHANGE_MIN')) {
             // exchange equip tokens
             let stones = await sa.getLuckyStones(config.get('LUCKY_STONE_NUM_PER_ROLE'));
