@@ -222,6 +222,9 @@ class Logic {
             }
             catch (e) {
                 console.log(e);
+                if (e.toString().indexOf('not open')) {
+                    this.init();
+                }
             }
         }
     }
