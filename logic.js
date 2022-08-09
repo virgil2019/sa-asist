@@ -179,6 +179,30 @@ class Logic {
         }
     }
 
+    async upgrade() {
+        let upgradeOnce = async () => {
+            let equips = await sa.queryEquips();
+            for (let i = 0; i < equips.length; i++) {
+                let first = await sa.queryToken(equips[i]);
+                for (let j = i + 1; j < equips.length; j++) {
+                    let second = await sa.queryToken(equips[i]);
+                    if (first._name == second._name && first._level == second._level) {
+                        await sa.upgrade(equips[i], equips[j]);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        while (true) {
+            let ret = await upgradeOnce();
+            if (!ret) {
+                break;
+            }
+        }
+    }
+
     async init() {
         sa.init();
     }
@@ -206,6 +230,9 @@ class Logic {
 
         // Exchange
         await this.exchange();
+
+        // Upgrade
+        await this.upgrade();
 
         // Change equips
         await this.changeEquips();

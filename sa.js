@@ -352,6 +352,18 @@ async function queryToken(tokenId) {
   return query(contracts.U, 'queryToken', [tokenId])
 }
 
+async function upgrade(tokenId1, tokenId2) {
+  await sendTransaction(
+    contracts.D,
+    contracts.U,
+    chainId,
+    secret,
+    'upgradeToken',
+    [tokenId1, tokenId2]
+  );
+  await sleep(SLEEP_TIME);
+}
+
 async function init() {
   contracts = abi.connect();
   contracts.D.eth.handleRevert = true;
@@ -383,4 +395,5 @@ module.exports = {
     sellToken: sellToken,
     queryEquipToken: queryEquipToken,
     queryPetToken: queryPetToken,
+    upgrade: upgrade,
 }
