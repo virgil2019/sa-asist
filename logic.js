@@ -231,14 +231,14 @@ class Logic {
         // Exchange
         await this.exchange();
 
+        // Clear box
+        await sa.sellToken();
+
         // Upgrade
         await this.upgrade();
 
         // Change equips
         await this.changeEquips();
-
-        // Clear box
-        await sa.sellToken();
         // console.log('queryCharacter', await sa.queryCharacter(83575));
     }
     
