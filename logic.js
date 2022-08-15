@@ -95,6 +95,7 @@ class Logic {
         for (let i = 0; i < this.roles.pet.length; i++) {
             // Redeem
             await sa.redeemPet(this.roles.pet[i]);
+            await this.exchangePet();
         }
     }
 
@@ -102,11 +103,12 @@ class Logic {
         for (let i = 0; i < this.roles.equip.length; i++) {
             // Redeem
             await sa.redeemEquip(this.roles.equip[i]);
+            await this.exchangeEquip();
         }
     }
 
-    // Exchange
-    async exchange() {
+    // Exchange pet
+    async exchangePet() {
         let petTokens = await sa.queryPetToken();
         console.log('exchange petTokens', petTokens, petTokens.length);
         if (petTokens.length >= config.get('EXCHANGE_MIN')) {
@@ -118,7 +120,10 @@ class Logic {
             await sa.useLuckyStone(stones.slice(0, config.get('LUCKY_STONE_NUM_PER_ROLE')));
             await sa.exchangePet();
         }
+    }
 
+    // Exchange equip
+    async exchangeEquip() {
         let equipTokens = await sa.queryEquipToken();
         console.log('exchange equipTokens', equipTokens, equipTokens.length);
         if (equipTokens.length >= config.get('EXCHANGE_MIN')) {
@@ -227,9 +232,6 @@ class Logic {
 
         // Redeem equip
         await this.redeemEquip();
-
-        // Exchange
-        await this.exchange();
 
         // Clear box
         await sa.sellToken();
