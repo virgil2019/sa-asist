@@ -369,6 +369,32 @@ async function init() {
   contracts.D.eth.handleRevert = true;
 }
 
+async function queryMarketRole(num) {
+  return await query(contracts.z, 'queryStoreOrderList', [4,1,num]);
+}
+
+async function buyToken(orderId, price, characterId) {
+  // approve
+  await sendTransaction(
+    contracts.D,
+    SCGT,
+    chainId,
+    secret,
+    'approve',
+    [contracts.z._address, price]
+  );
+
+  // buy
+  await sendTransaction(
+    contracts.D,
+    contracts.z,
+    chainId,
+    secret,
+    'buyOrder',
+    [characterId, orderId]
+  );
+}
+
 module.exports = {
     EQUIP_TYPE: EQUIP_TYPE,
     init: init,
@@ -396,4 +422,6 @@ module.exports = {
     queryEquipToken: queryEquipToken,
     queryPetToken: queryPetToken,
     upgrade: upgrade,
+    queryMarketRole: queryMarketRole,
+    buyToken: buyToken,
 }

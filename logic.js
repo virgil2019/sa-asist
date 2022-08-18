@@ -208,6 +208,21 @@ class Logic {
         }
     }
 
+    async buyRole() {
+        let roles = await sa.queryMarketRole(50);
+        for (let i = 0; i < roles.length; i++) {
+            if (roles[i]._orderId != 0 && roles[i]._buyTime == 0) {
+                let character = await sa.queryCharacter(roles[i]._tokenId);
+                let price = BigInt(roles[i]._price) / BigInt(10 ** 18);
+                if (parseInt(character.powerFactor) > 25 && price < 20000n) {
+                    console.log('character', character, price);
+                    await sa.buyToken(roles[i]._orderId, roles[i]._price,
+                        this.roles.free[0] == null ? this.roles.gold[0] : this.roles.free[0]);
+                }
+            }
+        }
+    }
+
     async init() {
         sa.init();
     }
@@ -215,6 +230,7 @@ class Logic {
     async mainLoop() {
         this.init();
         await this.queryRoles();
+        await this.buyRole();
         let redeem = await this.checkAndDispatch();
 
         // Is it time to redeem
