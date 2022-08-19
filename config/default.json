@@ -5,6 +5,7 @@
     "APPROVAL": 10000000,
     "SLEEP": 10,
     "LUCKY_STONE_NUM_PER_ROLE": 30,
+    "MAX_EXCHANGE_NUM": 25,
     "EQUIP_NUM": 1,
     "PET_NUM": 1,
     "RARE": 2,

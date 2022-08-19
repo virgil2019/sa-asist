@@ -89,7 +89,7 @@ async function exchangeToken(contract, mapId) {
     chainId,
     secret,
     'exchangeToken',
-    [mapId, tokenIds]
+    [mapId, tokenIds.slice(0, config.get('MAX_EXCHANGE_NUM'))]
   );
   await sleep(SLEEP_TIME);
 }
