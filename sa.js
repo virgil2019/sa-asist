@@ -353,7 +353,7 @@ async function queryToken(tokenId) {
 }
 
 async function upgrade(tokenId1, tokenId2) {
-  await sendTransaction(
+  let ret = await sendTransaction(
     contracts.D,
     contracts.U,
     chainId,
@@ -362,6 +362,7 @@ async function upgrade(tokenId1, tokenId2) {
     [tokenId1, tokenId2]
   );
   await sleep(SLEEP_TIME);
+  return (ret != null);
 }
 
 async function init() {
@@ -385,7 +386,7 @@ async function buyToken(orderId, price, characterId) {
   );
 
   // buy
-  await sendTransaction(
+  let ret = await sendTransaction(
     contracts.D,
     contracts.z,
     chainId,
@@ -393,6 +394,8 @@ async function buyToken(orderId, price, characterId) {
     'buyOrder',
     [characterId, orderId]
   );
+
+  return (ret != null);
 }
 
 module.exports = {
