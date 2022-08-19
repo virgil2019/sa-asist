@@ -15,6 +15,7 @@ class Logic {
 
     // check status and try to let them work
     async checkAndDispatch() {
+        console.log('checkAndDispatch');
         // if it is the time to redeem, return true
         let stakingBlock = 0;
         for (let i = 0; i < this.roles.pet.length; i++) {
@@ -85,6 +86,7 @@ class Logic {
             
     // Redeem gold
     async redeemGold() {
+        console.log('redeemGold');
         for (let i = 0; i < this.roles.gold.length; i++) {
             await sa.redeemGold(this.roles.gold[i]);
         }
@@ -92,6 +94,7 @@ class Logic {
 
     // Redeem pet
     async redeemPet() {
+        console.log('redeemPet');
         for (let i = 0; i < this.roles.pet.length; i++) {
             // Redeem
             await sa.redeemPet(this.roles.pet[i]);
@@ -100,6 +103,7 @@ class Logic {
     }
 
     async redeemEquip() {
+        console.log('redeemEquip');
         for (let i = 0; i < this.roles.equip.length; i++) {
             // Redeem
             await sa.redeemEquip(this.roles.equip[i]);
@@ -138,6 +142,7 @@ class Logic {
     }
 
     async changeEquips() {
+        console.log('changeEquips');
         let queryBestEquip = async () => {
             let ret = {};
             let equips = await sa.queryEquips();
@@ -185,6 +190,7 @@ class Logic {
     }
 
     async upgrade() {
+        console.log('upgrade');
         let upgradeOnce = async () => {
             let equips = await sa.queryEquips();
             for (let i = 0; i < equips.length; i++) {
@@ -209,6 +215,7 @@ class Logic {
     }
 
     async buyRole() {
+        console.log('buyRole');
         let roles = await sa.queryMarketRole(50);
         for (let i = 0; i < roles.length; i++) {
             if (roles[i]._orderId != 0 && roles[i]._buyTime == 0) {
@@ -257,7 +264,6 @@ class Logic {
 
         // Change equips
         await this.changeEquips();
-        // console.log('queryCharacter', await sa.queryCharacter(83575));
     }
     
     async run() {
