@@ -162,29 +162,41 @@ class Logic {
             return ret;
         }
 
-        // sort roles by power
-        let roles = await sa.queryRoles();
-        roles = JSON.parse(JSON.stringify(roles));
-        
-        let powerMap = {};
-        for (let i = 0; i < roles.free.length; i++) {
-            let info = await sa.queryCharacter(roles.free[i]);
-            powerMap[roles.free[i]] = info.totalPower;
+        let changeOneEquip = async() => {
+            // sort roles by power
+            let roles = await sa.queryRoles();
+            roles = JSON.parse(JSON.stringify(roles));
+            
+            let powerMap = {};
+            for (let i = 0; i < roles.free.length; i++) {
+                let info = await sa.queryCharacter(roles.free[i]);
+                powerMap[roles.free[i]] = info.totalPower;
+            }
+    
+            roles.free.sort((t1, t2) => {
+                return powerMap[t2] - powerMap[t1];
+            });
+            console.log('sorted free roles', roles.free);
+    
+            for (let i = 0; i < roles.free.length; i++) {
+                let best = await queryBestEquip();
+                let character = await sa.queryCharacter(roles.free[i]);
+                for (let j = 0; j < character.tokenList.length; j++) {
+                    let equip = await sa.queryToken(character.tokenList[j]);
+                    if (parseInt(equip._power) < parseInt(best[j]._power)) {
+                        await sa.wear(roles.free[i], best[j]._tokenId);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
-        roles.free.sort((t1, t2) => {
-            return powerMap[t2] - powerMap[t1];
-        });
-        console.log('sorted free roles', roles.free);
-
-        for (let i = 0; i < roles.free.length; i++) {
-            let best = await queryBestEquip();
-            let character = await sa.queryCharacter(roles.free[i]);
-            for (let j = 0; j < character.tokenList.length; j++) {
-                let equip = await sa.queryToken(character.tokenList[j]);
-                if (parseInt(equip._power) < parseInt(best[j]._power)) {
-                    await sa.wear(roles.free[i], best[j]._tokenId);
-                }
+        while (true) {
+            let ret = await changeOneEquip();
+            if (!ret) {
+                break;
             }
         }
     }
