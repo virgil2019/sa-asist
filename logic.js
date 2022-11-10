@@ -207,6 +207,10 @@ class Logic {
             let equips = await sa.queryEquips();
             for (let i = 0; i < equips.length; i++) {
                 let first = await sa.queryToken(equips[i]);
+                if (first._level == 9) {
+                    continue;
+                }
+                
                 for (let j = i + 1; j < equips.length; j++) {
                     let second = await sa.queryToken(equips[j]);
                     if (first._name == second._name && first._level == second._level) {
