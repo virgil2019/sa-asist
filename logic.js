@@ -275,7 +275,7 @@ class Logic {
         await this.redeemEquip();
 
         // Clear box
-        await sa.sellToken();
+        await sa.batchSell();
 
         // Upgrade
         await this.upgrade();

@@ -29,6 +29,34 @@ async function tokenOfOwnerByIndex(address, index) {
   return query(contracts.W, 'tokenOfOwnerByIndex', [address, index]);
 }
 
+async function batchSell() {
+  let balance = await query(contracts.W, 'balanceOf', [address]);
+  let tokens = [];
+  for (let i = 0; i < Number(balance); i++) {
+    console.log(i, balance);
+    let tokenId = await tokenOfOwnerByIndex(address, i);
+    let tokenType = await query(contracts.U, 'queryTokenType', [tokenId]);
+    if (tokenType == ITEM_TYPE.EQUIP) {
+      let tokenInfo = await queryToken(tokenId);
+      if (parseInt(tokenInfo._rare) <= config.get('RARE')) {
+        console.log(tokenInfo);
+        tokens.push(tokenId);
+        continue;
+      }
+    }
+  }
+  console.log('Tokens to be sold', tokens);
+  await sendTransaction(
+    contracts.D,
+    contracts.Q,
+    chainId,
+    secret,
+    'recovery',
+    [tokens]
+  );
+  await sleep(SLEEP_TIME);
+}
+
 async function sellToken() {
   let balance = await query(contracts.W, 'balanceOf', [address]);
   for (let i = 0; i < Number(balance);) {
@@ -427,4 +455,5 @@ module.exports = {
     upgrade: upgrade,
     queryMarketRole: queryMarketRole,
     buyToken: buyToken,
+    batchSell: batchSell,
 }

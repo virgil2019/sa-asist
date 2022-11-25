@@ -656,6 +656,267 @@ var l = [
       type: 'function',
     },
   ],
+  d = [
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'PWCTAddress',
+          type: 'address'
+        },
+        {
+          internalType: 'address',
+          name: 'ERC721ProxyAddress',
+          type: 'address'
+        },
+        {
+          internalType: 'address',
+          name: 'PokerWorldAddress',
+          type: 'address'
+        }
+      ],
+      stateMutability: 'nonpayable',
+      type: 'constructor'
+    },
+    {
+      anonymous: !1,
+      inputs: [
+        {
+          indexed: !0,
+          internalType: 'address',
+          name: 'previousOwner',
+          type: 'address'
+        },
+        {
+          indexed: !0,
+          internalType: 'address',
+          name: 'newOwner',
+          type: 'address'
+        }
+      ],
+      name: 'OwnershipTransferred',
+      type: 'event'
+    },
+    {
+      inputs: [
+      ],
+      name: 'DIAMOND_SELL_PRICE',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+      ],
+      name: 'EMERALD_SELL_PRICE',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+      ],
+      name: 'ERC721Proxy',
+      outputs: [
+        {
+          internalType: 'contract IERC721Proxy',
+          name: '',
+          type: 'address'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+      ],
+      name: 'PWCT',
+      outputs: [
+        {
+          internalType: 'contract IERC20',
+          name: '',
+          type: 'address'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+      ],
+      name: 'PokerWorld',
+      outputs: [
+        {
+          internalType: 'contract IPokerWorld',
+          name: '',
+          type: 'address'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+      ],
+      name: 'RUBY_SELL_PRICE',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+      ],
+      name: 'SAPPHIRE_SELL_PRICE',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+      ],
+      name: 'isActive',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+      ],
+      name: 'owner',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256[]',
+          name: 'tokenIdList',
+          type: 'uint256[]'
+        }
+      ],
+      name: 'recovery',
+      outputs: [
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+      ],
+      name: 'renounceOwnership',
+      outputs: [
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'ERC721ProxyAddress',
+          type: 'address'
+        }
+      ],
+      name: 'setERC721Proxy',
+      outputs: [
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bool',
+          name: '_isActive',
+          type: 'bool'
+        }
+      ],
+      name: 'setIsActive',
+      outputs: [
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'PWCTAddress',
+          type: 'address'
+        }
+      ],
+      name: 'setPWCT',
+      outputs: [
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'PokerWorldAddress',
+          type: 'address'
+        }
+      ],
+      name: 'setPokerWorld',
+      outputs: [
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'newOwner',
+          type: 'address'
+        }
+      ],
+      name: 'transferOwnership',
+      outputs: [
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    }
+  ],
   c = [
     {
       inputs: [
@@ -4608,6 +4869,7 @@ var l = [
   R = '0x74Dd7b2dC60070516f26AcC30a5C734D3c87B2c9',
   N = '0x02406D561069cBed27eF8Ea20AFD41779A90e2Bf',
   q = '0xB33bDd76FE0469b7e8236EE91BB89c13763B0BfB';
+  Z = '0xf42257B894557822789ff71C0DD488bbCa826f16',
 _ &&
   ((x = '0xAd40FdeA630f3eA06d632eD760AA68d4de9b5416'),
   (O = '0xa1AE7a4f90f8C1504474ac262241A02e5FdBe8a8'),
@@ -4634,6 +4896,7 @@ function connect() {
   K = new D.eth.Contract(b, B),
   $ = new D.eth.Contract(w, L),
   Y = new D.eth.Contract(v, R),
+  Q = new D.eth.Contract(d, Z),
 	X = '';
   return {
     D,
@@ -4649,6 +4912,7 @@ function connect() {
     $,
     Y,
     X,
+    Q,
   };
 }
 
