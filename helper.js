@@ -269,7 +269,7 @@ async function transferToken(contract, to, id) {
 }
 
 async function queryMarket() {
-  let a = await query(contracts.z, 'queryStoreOrderList', [2,1,50]);
+  let a = await query(contracts.z, 'queryStoreOrderList', [4,1,50]);
   console.log('a', a.length);
   for (let i = 0; i < a.length; i++) {
     if (a[i]._orderId != 0 && a[i]._buyTime == 0) {
@@ -277,7 +277,7 @@ async function queryMarket() {
       let character = await queryCharacter(a[i]._tokenId);
       let price = BigInt(a[i]._price) / BigInt(10 ** 18);
       // if (parseInt(character.powerFactor) > 25 && price < 20000n) {
-        console.log('character', a[i]._orderId, price);
+        console.log('character', a[i]._orderId, character.powerFactor, price);
       // }
     }
   }
@@ -309,12 +309,12 @@ async function buyToken(orderId, price, characterId) {
 async function test() {
   // let a = await transferToken(contracts.H, '0xfdd9C1123bA300D4B555b0182a69faFB59322FC9', 28009);
   // let a = await query(contracts.U, 'exchangeToken', [0, [28009]]);
-  // let a = await queryCharacter(181332);
+  let a = await queryCharacter(43128);
   // await queryMarket();
-  await buyToken(404, 5n * BigInt(10 ** 18), 181332);
+  // await buyToken(404, 5n * BigInt(10 ** 18), 181332);
   // let a = await queryRoles();
   // let a = await queryToken(133541);
-  // console.log('a', a);
+  console.log('a', a);
 }
 
 // sellToken();
