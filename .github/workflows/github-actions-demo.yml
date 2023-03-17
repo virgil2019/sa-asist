@@ -23,5 +23,5 @@ jobs:
           cache: 'npm'
       - run: npx ganache -s 0
       - run: |
-        cd ${{ github.workspace }}/contracts
-        npx truffle test
+          cd ${{ github.workspace }}/contracts
+          npx truffle test
