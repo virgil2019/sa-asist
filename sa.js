@@ -3,7 +3,6 @@ const fs = require('fs');
 const config = require('config');
 const {sleep} = require('./utils');
 const {wrapErc20Contract} = require('./erc20');
-const SCGT = wrapErc20Contract(contracts.D, '0x0e16C1065d69f80F7E0948D566A267A63767a196');
 const {sendTransaction, query} = require('./ethereum');
 const address = config.get('ACCOUNT');
 const secret = fs.readFileSync('./.secret', 'utf8');
@@ -405,6 +404,7 @@ async function queryMarketRole(num) {
 }
 
 async function buyToken(orderId, price, characterId) {
+  const SCGT = wrapErc20Contract(contracts.D, '0x0e16C1065d69f80F7E0948D566A267A63767a196');
   // approve
   await sendTransaction(
     contracts.D,
