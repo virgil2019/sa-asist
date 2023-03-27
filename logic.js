@@ -236,7 +236,7 @@ class Logic {
             if (roles[i]._orderId != 0 && roles[i]._buyTime == 0) {
                 let character = await sa.queryCharacter(roles[i]._tokenId);
                 let price = BigInt(roles[i]._price) / BigInt(10 ** 18);
-                if (parseInt(character.powerFactor) > 25 && price < 20000n) {
+                if (parseInt(character.powerFactor) > 25 && price < 40000n) {
                     console.log('character', character, price);
                     let ret = await sa.buyToken(roles[i]._orderId, roles[i]._price,
                         this.roles.free[0] == null ? this.roles.gold[0] : this.roles.free[0]);
