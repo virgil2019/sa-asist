@@ -1,6 +1,7 @@
 const config = require('config');
 const sa = require('./sa');
 const { sleep } = require('./utils');
+const https = require('https');
 
 class Logic {
     constructor() {
@@ -248,6 +249,26 @@ class Logic {
         }
     }
 
+    async participateAirdrop() {
+        let URL = 'https://test.app.limclct.com/sa-api/participateAirdrop?address=0x9b305b2e6db48a28fe0a53265290b8fffba346a3';
+        https.get(URL, (response) => {
+            let todo = '';
+        
+            // called when a data chunk is received.
+            response.on('data', (chunk) => {
+                todo += chunk;
+            });
+        
+            // called when the complete response is received.
+            response.on('end', () => {
+                console.log('participateAirdrop', todo);
+            });
+        
+        }).on("error", (error) => {
+            console.log("Error: " + error.message);
+        });
+    }
+
     async init() {
         sa.init();
     }
@@ -285,6 +306,8 @@ class Logic {
     }
     
     async run() {
+        this.participateAirdrop();
+        setInterval(this.participateAirdrop, 24 * 3600 * 1000);
         while (true) {
             try {
                 await this.mainLoop();
